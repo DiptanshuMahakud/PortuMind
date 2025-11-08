@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 export async function POST(req) {
   try {
     await connectToDatabase();
-    const token = req.cookies.get("token")?.value;
+    const token = req.cookies.get("token_investor")?.value || req.cookies.get("token_analyst")?.value;
     if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -33,7 +33,7 @@ export async function POST(req) {
 export async function GET(req) {
   try {
     await connectToDatabase();
-    const token = req.cookies.get("token")?.value;
+    const token = req.cookies.get("token_investor")?.value || req.cookies.get("token_analyst")?.value;
     if (!token) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);

@@ -2,58 +2,50 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { serialize } from "cookie";
 import User from "@/models/User";
 import connectToDatabase from "@/utils/mongodb";
 
-const JWT_SECRET = process.env.JWT_SECRET;
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
-
 export async function POST(req) {
   try {
+    await connectToDatabase();
     const { email, password } = await req.json();
 
-    if (!email || !password)
-      return NextResponse.json({ error: "Email and password required" }, { status: 400 });
-
-    await connectToDatabase();
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email });
     if (!user){
-      console.log("invalid user");
+      console.log("no user found");
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-    }
 
-    const match = await bcrypt.compare(password, user.password);
-    if (!match){
-      console.log("password not match");
-       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });
-    }
-
-    // ✅ sign JWT
     const token = jwt.sign(
-      { sub: user._id.toString(), email: user.email, role: user.role },
-      JWT_SECRET,
-      { expiresIn: JWT_EXPIRES_IN }
+      { sub: user._id, role: user.role, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "7d" }
     );
 
-    // ✅ HttpOnly cookie
-    const cookie = serialize("token", token, {
+    // ✅ Dynamic cookie name based on role
+    const cookieName = user.role === "analyst" ? "token_analyst" : "token_investor";
+
+    const response = NextResponse.json({
+      message: "Login successful",
+      role: user.role,
+    });
+
+    response.cookies.set(cookieName, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 7 * 24 * 60 * 60, // 7 days
     });
 
-    const res = NextResponse.json({
-      message: "Login successful",
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
-    });
-    console.log("Login successful");
-    res.headers.set("Set-Cookie", cookie);
-    return res;
+    return response;
   } catch (err) {
     console.error("Login error:", err);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
+

@@ -103,7 +103,7 @@ export default function ChatBox({
 
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-6 flex flex-col h-[520px]">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mt-6 flex flex-col h-[520px] lg:h-[720px]">
       {/* header */}
       <div className="flex items-center justify-between mb-3">
         <div>

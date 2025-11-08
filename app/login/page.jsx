@@ -14,23 +14,19 @@ export default function LoginPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const { data } = await axios.post("/api/login", form);
-      const role = data.user.role || "blabla";
-      console.log(role);
-      // ✅ manual rerouting based on role
+  e.preventDefault();
+  try {
+    const res = await axios.post("/api/login", form);
+    if (res.status === 200) {
+      const role = res.data.role;
       if (role === "analyst") router.push("/dashboard/analyst");
       else router.push("/dashboard/investor");
-    } catch (err) {
-      setError(err.response?.data?.error || "Login failed");
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (err) {
+    setError(err.response?.data?.error || "Login failed");
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-100 px-4">

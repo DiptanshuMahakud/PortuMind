@@ -7,6 +7,7 @@ import StockHeader from "../components/StockHeader";
 import StockChart from "../components/StockCharts";
 import AdviceCard from "../components/AdviceCard";
 import ChatBox from "../components/StockChat";
+import AssignAnalystCard from "../components/AnalystAssignCard";
 
 export default function StockDetailsPage() {
   const { symbol } = useParams();
@@ -87,83 +88,100 @@ export default function StockDetailsPage() {
     return <div className="p-8 text-gray-500">Stock data not found.</div>;
 
   return (
-  <div className="min-h-screen bg-gray-50">
+  <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
     <StockNavbar />
 
-    <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col lg:flex-row gap-6">
-      {/* 🔹 LEFT SIDE — Portfolio + Chart */}
-      <div className="flex-1 lg:w-3/5 space-y-6">
-        {/* ✳️ Section Header */}
-        <div className="mb-2">
-          <h2 className="text-2xl font-semibold text-gray-900">
-            My Portfolio Snapshot
-          </h2>
-          <p className="text-sm text-gray-500">
-            A quick overview of your current holding and how it’s performing in real-time.
-          </p>
+    <div className="max-w-7xl mx-auto px-6 py-10 space-y-10">
+      {/* 🔹 GRID WRAPPER — aligns both top & bottom sections */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* ✳️ LEFT SIDE (2 columns wide) */}
+        <div className="lg:col-span-2 space-y-6">
+          {/* Section Header */}
+          <div className="mb-2">
+            <h2 className="text-2xl font-semibold text-gray-900">
+              My Portfolio Snapshot
+            </h2>
+            <p className="text-sm text-gray-500">
+              A quick overview of your current holding and how it’s performing in real-time.
+            </p>
+          </div>
+
+          <StockHeader
+            symbol={symbol}
+            portfolioItem={portfolioItem}
+            portfolioShare={portfolioShare}
+          />
+
+          {/* ✳️ Chart Section */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              Market Movement
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Track {symbol}’s price action and technical trends over the past few weeks.
+            </p>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+              <StockChart stockData={stockData} />
+            </div>
+          </div>
         </div>
 
-        <StockHeader
-          symbol={symbol}
-          portfolioItem={portfolioItem}
-          portfolioShare={portfolioShare}
-        />
-
-        {/* ✳️ Chart Section */}
-        <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            Market Movement
-          </h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Track {symbol}’s price action and technical trends over the past few weeks.
-          </p>
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-            <StockChart stockData={stockData} />
+        {/* ✳️ RIGHT SIDE (1 column wide) */}
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              AI Investment Insight
+            </h3>
+            <p className="text-sm text-gray-500 mb-4">
+              Based on recent performance and your portfolio allocation, here’s what our model suggests for {symbol}.
+            </p>
+            <AdviceCard
+              symbol={symbol}
+              portfolioItem={portfolioItem}
+              stockData={stockData}
+              portfolioShare={portfolioShare}
+            />
           </div>
+
+          <AssignAnalystCard symbol={symbol} />
         </div>
       </div>
 
-      {/* 🔹 RIGHT SIDE — Advice + Chat */}
-      <div className="lg:w-2/5 flex flex-col space-y-6">
-        {/* ✳️ Advice Section */}
-        <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            AI Investment Insight
-          </h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Based on recent performance and your portfolio allocation, here’s what our model suggests for {symbol}.
-          </p>
-          <AdviceCard
-            symbol={symbol}
-            portfolioItem={portfolioItem}
-            stockData={stockData}
-            portfolioShare={portfolioShare}
-          />
+      {/* 🔹 SECOND GRID ROW — CHATBOX (aligned with left side start) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3">
+        <div className="lg:col-span-3">
+          <div
+            className="
+              bg-white/90
+              border border-gray-100
+              rounded-2xl
+              shadow-md
+              p-6 md:p-8
+              backdrop-blur-sm
+              transition-all
+              duration-300
+              hover:shadow-lg
+            "
+          >
+            <h3 className="text-2xl font-semibold text-blue-700 mb-2">
+              Talk to Your AI Analyst
+            </h3>
+            <p className="text-sm text-gray-500 mb-5">
+              Discuss strategies, clarify AI reasoning, or explore how {symbol} fits into your long-term portfolio goals.
+            </p>
+
+            {/* ✅ FIX: Remove overflow-hidden to prevent input cut-off */}
+            <ChatBox
+                symbol={symbol}
+                portfolioItem={portfolioItem}
+                stockData={stockData}
+                portfolioShare={portfolioShare}
+              />
+          </div>
         </div>
 
-        {/* ✳️ Chat Section */}
-        <div>
-          <h3 className="text-xl font-semibold text-gray-800 mb-2">
-            Talk to Your AI Analyst
-          </h3>
-          <p className="text-sm text-gray-500 mb-4">
-            Discuss strategy, clarify the reasoning behind AI’s call, or ask how {symbol} fits into your long-term plan.
-          </p>
-          {/* <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 h-[520px] flex flex-col">
-            <ChatBox
-              symbol={symbol}
-              portfolioItem={portfolioItem}
-              stockData={stockData}
-              portfolioShare={portfolioShare}
-            />
-          </div> */}
-          <ChatBox
-              symbol={symbol}
-              portfolioItem={portfolioItem}
-              stockData={stockData}
-              portfolioShare={portfolioShare}
-            />
-        </div>
+        {/* Empty right column for alignment */}
+        <div></div>
       </div>
     </div>
   </div>

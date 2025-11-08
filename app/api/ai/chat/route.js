@@ -13,7 +13,8 @@ export async function POST(req) {
     const body = await req.json();
     const { symbol, portfolio, portfolioShare, latestData, messages } = body;
 
-    const token = req.cookies.get("token")?.value;
+    const token = req.cookies.get("token_investor")?.value || req.cookies.get("token_analyst")?.value;
+
     if (!token)
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
