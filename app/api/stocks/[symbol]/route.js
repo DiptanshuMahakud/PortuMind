@@ -3,17 +3,18 @@ import yahooFinance from "yahoo-finance2";
 
 export async function GET(req, context) {
   try {
-    // ✅ Await the params promise
     const { symbol } = await context.params;
 
     if (!symbol) {
       return NextResponse.json({ error: "Symbol is required" }, { status: 400 });
     }
+
     const yf = new yahooFinance();
-    // Fetch live quote
+
+    // Live quote
     const quote = await yf.quote(symbol);
 
-    // Fetch 30-day chart data
+    // Historical 30-day data
     const end = new Date();
     const start = new Date();
     start.setDate(end.getDate() - 30);
@@ -24,7 +25,6 @@ export async function GET(req, context) {
       interval: "1d",
     });
 
-    // Build unified response
     const response = {
       symbol,
       currentPrice: quote.regularMarketPrice,
@@ -39,12 +39,16 @@ export async function GET(req, context) {
         close: q.close,
         high: q.high,
         low: q.low,
+        volume: q.volume, // ✅ added volume field
       })),
     };
 
     return NextResponse.json(response);
   } catch (err) {
     console.error("Stock API error:", err);
-    return NextResponse.json({ error: "Failed to fetch stock data" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch stock data" },
+      { status: 500 }
+    );
   }
 }

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { LogIn } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,99 +33,61 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      style={{
-        maxWidth: 480,
-        margin: "3rem auto",
-        padding: "1.5rem",
-        border: "1px solid #eee",
-        borderRadius: 8,
-        background: "#fff",
-      }}
-    >
-      <h1 style={{ marginBottom: 12, textAlign: "center" }}>Login</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-100 px-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+        {/* Header */}
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <LogIn className="text-blue-600" size={26} />
+          <h1 className="text-2xl font-semibold text-gray-800">Login</h1>
+        </div>
 
-      <form onSubmit={handleSubmit}>
-        <label style={{ display: "block", marginBottom: 8 }}>
-          Email
-          <input
-            name="email"
-            type="email"
-            required
-            value={form.email}
-            onChange={handleChange}
-            style={{
-              width: "100%",
-              padding: 8,
-              marginTop: 6,
-              borderRadius: 6,
-              border: "1px solid #ccc",
-            }}
-          />
-        </label>
-
-        <label style={{ display: "block", marginBottom: 16 }}>
-          Password
-          <input
-            name="password"
-            type="password"
-            required
-            value={form.password}
-            onChange={handleChange}
-            style={{
-              width: "100%",
-              padding: 8,
-              marginTop: 6,
-              borderRadius: 6,
-              border: "1px solid #ccc",
-            }}
-          />
-        </label>
-
-        {error && (
-          <div style={{ color: "red", marginBottom: 12, textAlign: "center" }}>
-            {error}
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+            <input
+              name="email"
+              type="email"
+              required
+              value={form.email}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-3 py-2 text-gray-700 outline-none transition"
+            />
           </div>
-        )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 16px",
-            width: "100%",
-            backgroundColor: "#0070f3",
-            color: "#fff",
-            border: "none",
-            borderRadius: 6,
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </form>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
+            <input
+              name="password"
+              type="password"
+              required
+              value={form.password}
+              onChange={handleChange}
+              className="w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 px-3 py-2 text-gray-700 outline-none transition"
+            />
+          </div>
 
-      {/* 🆕 Add Signup Section */}
-      <div
-        style={{
-          marginTop: 20,
-          textAlign: "center",
-          fontSize: "0.9rem",
-          color: "#555",
-        }}
-      >
-        Don’t have an account?{" "}
-        <span
-          style={{
-            color: "#0070f3",
-            textDecoration: "underline",
-            cursor: "pointer",
-          }}
-          onClick={() => router.push("/signup")}
-        >
-          Sign up here
-        </span>
+          {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {loading ? "Logging in..." : "Login"}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-500 mt-5">
+          Don’t have an account?{" "}
+          <span
+            className="text-blue-600 hover:underline cursor-pointer font-medium"
+            onClick={() => router.push("/signup")}
+          >
+            Sign up
+          </span>
+        </p>
       </div>
     </div>
   );
