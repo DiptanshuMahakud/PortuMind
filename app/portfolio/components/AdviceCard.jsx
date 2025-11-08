@@ -27,7 +27,7 @@ export default function AdviceCard({ symbol, portfolioItem, stockData ,portfolio
     };
 
     fetchAdvice();
-  }, [symbol, portfolioItem, stockData]);
+  }, [symbol, portfolioItem, stockData, portfolioShare]);
 
   if (loading)
     return (
