@@ -1,9 +1,17 @@
-export default function Home() {
+"use client";
+
+import LandingHeader from "./components/LandingHeader";
+import LandingNavbar from "./components/LandingNavbar";
+import LandingBody from "./components/Landingbody";
+import LandingFooter from "./components/LandingFooter";
+
+export default function LandingPage() {
   return (
-    <main className="flex items-center justify-center min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800">
-        AI Stock Analyst Platform 🧠
-      </h1>
-    </main>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      <LandingNavbar />
+      <LandingHeader />
+      <LandingBody />
+      <LandingFooter />
+    </div>
   );
 }

@@ -7,6 +7,35 @@ import AnalystStockHeader from "../../components/AnalystStockheader";
 import AnalystStockChart from "../../components/AnalystStockCharts";
 import AnalystAdviceCard from "../../components/AnalystAdviceCard";
 import AnalystChatBox from "../../components/AnalystChatBox";
+import ReportReviewCard from "../../components/ReportReviewCard";
+import { useRouter } from "next/navigation";
+
+
+
+function LoadingStatus() {
+  const messages = [
+    "Initializing dashboard...",
+    "Fetching live market data...",
+    "Analyzing portfolio metrics...",
+    "Generating investment insights...",
+  ];
+
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % messages.length);
+    }, 1800); // every 1.8s switch message
+    return () => clearInterval(interval);
+  }, [messages.length]);
+
+  return (
+    <p className="mt-6 text-gray-600 text-sm sm:text-base font-medium transition-all duration-500 ease-in-out">
+      {messages[index]}
+    </p>
+  );
+}
+
 
 export default function AnalystStockDetailsPage() {
   const { investorId, symbol } = useParams();
@@ -14,6 +43,7 @@ export default function AnalystStockDetailsPage() {
   const [portfolioItem, setPortfolioItem] = useState(null);
   const [stockData, setStockData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,7 +95,26 @@ export default function AnalystStockDetailsPage() {
     if (investorId && symbol) fetchData();
   }, [investorId, symbol]);
 
-  if (loading) return <div className="p-8 text-gray-500">Loading data...</div>;
+  if (loading)
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      {/* Spinner */}
+      <div className="relative">
+        <div className="h-14 w-14 border-4 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
+        <div className="absolute inset-0 flex items-center justify-center text-blue-700 font-semibold text-sm">
+          AI
+        </div>
+      </div>
+
+      {/* Status Text */}
+      <LoadingStatus />
+
+      {/* Optional Subtext */}
+      <p className="text-gray-400 text-xs mt-3 tracking-wide">
+        PortuMind — Empowering Smarter Investments
+      </p>
+    </div>
+  );
   if (!stockData)
     return (
       <div className="p-8 text-gray-500">No data found for {symbol}.</div>
@@ -128,6 +177,27 @@ export default function AnalystStockDetailsPage() {
                 investor={investor}
               />
             </div>
+            <div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Analyst Review Panel
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Review the latest AI-generated report for {symbol}, add your notes, and
+                record your professional judgment.
+              </p>
+
+              <ReportReviewCard investor={investor} symbol={symbol} />
+            </div>
+
+            <div className="text-right mt-4">
+              <button
+                onClick={() => router.push(`/stocks/${investor._id}/${symbol}/reports`)}
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                📜 View All Reports for {symbol}
+              </button>
+            </div>
+
           </div>
         </div>
 

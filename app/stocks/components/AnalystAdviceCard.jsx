@@ -2,6 +2,29 @@
 import { useEffect, useState } from "react";
 import axios from "@/utils/axios";
 
+
+function LoadingText() {
+  const messages = [
+    "Fetching market data...",
+    "Analyzing performance trends...",
+    "Evaluating your portfolio...",
+    "Generating AI recommendation...",
+  ];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % messages.length);
+    }, 1800);
+    return () => clearInterval(interval);
+  }, [messages.length]);
+
+  return (
+    <p className="text-gray-600 text-sm sm:text-base font-medium transition-all duration-500 ease-in-out">
+      {messages[index]}
+    </p>
+  );
+}
 export default function AnalystAdviceCard({ symbol, stockData, investor }) {
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,12 +50,19 @@ export default function AnalystAdviceCard({ symbol, stockData, investor }) {
   }, [symbol, stockData]);
 
   if (loading)
-    return (
-      <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-        <p className="text-gray-500">Generating AI analysis...</p>
-      </div>
-    );
+  return (
+    <div className="bg-white border border-gray-200 rounded-xl shadow-md flex flex-col items-center justify-center text-center p-10 min-h-[220px]">
+      {/* Spinner */}
+      <div className="h-10 w-10 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mb-5"></div>
 
+      {/* Dynamic Loading Text */}
+      <LoadingText />
+
+      <p className="text-gray-400 text-xs mt-3 tracking-wide">
+        PortuMind AI is processing...
+      </p>
+    </div>
+  );
   if (!analysis)
     return (
       <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">

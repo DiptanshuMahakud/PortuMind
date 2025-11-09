@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { LogIn } from "lucide-react";
+import { LogIn, Loader2 } from "lucide-react"; // 👈 added spinner icon
 
 export default function LoginPage() {
   const router = useRouter();
@@ -14,19 +14,25 @@ export default function LoginPage() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const res = await axios.post("/api/login", form);
-    if (res.status === 200) {
-      const role = res.data.role;
-      if (role === "analyst") router.push("/dashboard/analyst");
-      else router.push("/dashboard/investor");
-    }
-  } catch (err) {
-    setError(err.response?.data?.error || "Login failed");
-  }
-};
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
+    try {
+      const res = await axios.post("/api/login", form);
+      if (res.status === 200) {
+        const role = res.data.role;
+        setTimeout(() => {
+          if (role === "analyst") router.push("/dashboard/analyst");
+          else router.push("/dashboard/investor");
+        }, 600); // ⏳ small delay to let loader feel natural
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Login failed");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-blue-100 px-4">
@@ -40,7 +46,9 @@ export default function LoginPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Email
+            </label>
             <input
               name="email"
               type="email"
@@ -52,7 +60,9 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Password
+            </label>
             <input
               name="password"
               type="password"
@@ -63,14 +73,24 @@ export default function LoginPage() {
             />
           </div>
 
-          {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+          {error && (
+            <div className="text-red-500 text-sm text-center">{error}</div>
+          )}
 
+          {/* 🔹 Login Button with Spinner */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed"
+            className={`w-full flex items-center justify-center gap-2 bg-blue-600 text-white py-2.5 rounded-lg hover:bg-blue-700 transition font-medium disabled:opacity-60 disabled:cursor-not-allowed`}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> {/* spinner icon */}
+                Logging in...
+              </>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 

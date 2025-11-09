@@ -20,17 +20,27 @@ export default function StockCard({ stock }) {
     fetchLiveData();
   }, [stock.symbol]);
 
-  if (loading)
+  // 🦴 Skeleton Loader Component
+  if (loading) {
     return (
-      <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm">
-        <p className="text-gray-400">Loading {stock.symbol}...</p>
+      <div className="bg-white p-4 border border-gray-200 rounded-lg shadow-sm animate-pulse">
+        <div className="flex justify-between mb-3">
+          <div className="h-5 bg-gray-200 rounded w-20"></div>
+          <div className="h-5 bg-gray-200 rounded w-10"></div>
+        </div>
+        <div className="flex justify-between mb-2">
+          <div className="h-4 bg-gray-200 rounded w-28"></div>
+          <div className="h-4 bg-gray-200 rounded w-20"></div>
+        </div>
+        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
       </div>
     );
+  }
 
+  // 🧮 Actual Stock Data
   const currentPrice = liveData?.currentPrice || 0;
   const avgPrice = stock.avgPrice;
   const gainLoss = ((currentPrice - avgPrice) / avgPrice) * 100;
-
   const isProfit = gainLoss > 0;
   const totalValue = (currentPrice * stock.quantity).toFixed(2);
 

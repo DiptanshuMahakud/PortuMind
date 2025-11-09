@@ -9,6 +9,31 @@ import AdviceCard from "../components/AdviceCard";
 import ChatBox from "../components/StockChat";
 import AssignAnalystCard from "../components/AnalystAssignCard";
 
+function LoadingStatus() {
+  const messages = [
+    "Initializing dashboard...",
+    "Fetching live market data...",
+    "Analyzing portfolio metrics...",
+    "Generating investment insights...",
+  ];
+
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % messages.length);
+    }, 1800); // every 1.8s switch message
+    return () => clearInterval(interval);
+  }, [messages.length]);
+
+  return (
+    <p className="mt-6 text-gray-600 text-sm sm:text-base font-medium transition-all duration-500 ease-in-out">
+      {messages[index]}
+    </p>
+  );
+}
+
+
 export default function StockDetailsPage() {
   const { symbol } = useParams();
   const [portfolioItem, setPortfolioItem] = useState(null);
@@ -83,7 +108,27 @@ export default function StockDetailsPage() {
     if (symbol) fetchData();
   }, [symbol]);
 
-  if (loading) return <div className="p-8 text-gray-500">Loading data...</div>;
+  if (loading)
+  return (
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-100">
+      {/* Spinner */}
+      <div className="relative">
+        <div className="h-14 w-14 border-4 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
+        <div className="absolute inset-0 flex items-center justify-center text-blue-700 font-semibold text-sm">
+          AI
+        </div>
+      </div>
+
+      {/* Status Text */}
+      <LoadingStatus />
+
+      {/* Optional Subtext */}
+      <p className="text-gray-400 text-xs mt-3 tracking-wide">
+        PortuMind — Empowering Smarter Investments
+      </p>
+    </div>
+  );
+
   if (!stockData)
     return <div className="p-8 text-gray-500">Stock data not found.</div>;
 

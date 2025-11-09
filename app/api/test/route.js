@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { connectDB } from "@/utils/mongodb";
+import connectToDatabase from "@/utils/mongodb";
 
 export async function GET() {
-  await connectDB();
+  await connectToDatabase();
   return NextResponse.json({ message: "Database connection successful!" });
 }
