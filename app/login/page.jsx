@@ -76,6 +76,24 @@ export default function LoginPage() {
           {error && (
             <div className="text-red-500 text-sm text-center">{error}</div>
           )}
+          <div className="bg-blue-50/40 rounded-xl p-4 text-sm text-gray-700 mb-3 border border-blue-100">
+            <p className="text-center font-medium text-blue-700 mb-2">
+              🧪 Testing Credentials
+            </p>
+            <div className="space-y-1 text-center">
+              <p>
+                <span className="font-medium text-gray-800">Investor:</span>{" "}
+                investor@gmail.com
+              </p>
+              <p>
+                <span className="font-medium text-gray-800">Analyst:</span>{" "}
+                analyst@gmail.com
+              </p>
+              <p>
+                <span className="font-medium text-gray-800">Password:</span> 12345678
+              </p>
+            </div>
+          </div>
 
           {/* 🔹 Login Button with Spinner */}
           <button
