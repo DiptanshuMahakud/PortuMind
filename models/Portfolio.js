@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import "./User";
 const PortfolioSchema = new mongoose.Schema({
   investorId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   holdings: [
