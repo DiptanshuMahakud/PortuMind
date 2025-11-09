@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import "@/lib/models/User";
 const AssignmentSchema = new mongoose.Schema({
   investorId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   analystId: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
